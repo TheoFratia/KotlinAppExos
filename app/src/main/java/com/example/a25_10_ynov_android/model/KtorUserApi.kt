@@ -10,11 +10,12 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 //Suspend sera expliqué dans le chapitre des coroutines
-suspend fun main() {
+ suspend fun main()  {
     val user = KtorUserApi.loadRandomUser()
     println("""
         Il s'appelle ${user.name} pour le contacter :
@@ -42,7 +43,7 @@ object KtorUserApi {
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true }, contentType = ContentType.Any)
         }
-        expectSuccess = true //Exception si code >= 300
+        //expectSuccess = true //Exception si code >= 300
         //engine { proxy = ProxyBuilder.http("monproxy:1234") }
     }
 

@@ -7,6 +7,7 @@ import io.ktor.client.engine.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.flow.flow
@@ -15,7 +16,7 @@ import kotlinx.serialization.json.Json
 
 //Suspend sera expliqué dans le chapitre des coroutines
 suspend fun main() {
-    val res = KtorWeatherApi.loadWeathers("Nice")
+    val res = KtorWeatherApi.loadWeathers("")
     for(r in res){
         println(r.getResume())
     }
@@ -47,12 +48,17 @@ object KtorWeatherApi {
     //GET Le JSON reçu sera parser en List<MuseumObject>,
     //Crash si le JSON ne correspond pas
     suspend fun loadWeathers(cityName : String): List<WeatherBean> {
-        return client.get("$API_URL/find?appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr&q=$cityName"){
+        val response =  client.get("$API_URL/find?appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr&q=$cityName"){
 //            headers {
 //                append("Authorization", "Bearer YOUR_TOKEN")
 //                append("Custom-Header", "CustomValue")
 //            }
-        }.body<WeatheAPIResult>().list.onEach { w->
+        }
+        if (!response.status.isSuccess()) {
+            throw Exception("Erreur API: ${response.status} - ${response.bodyAsText()}")
+        }
+
+        return response.body<WeatheAPIResult>().list.onEach { w->
             w.weather.forEach {
                 it.icon = "https://openweathermap.org/img/wn/${it.icon}@4x.png"
             }
