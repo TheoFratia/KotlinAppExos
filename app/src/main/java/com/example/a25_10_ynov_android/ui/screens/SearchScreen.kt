@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +48,6 @@ fun SearchScreenPreview() {
 fun SearchScreen(modifier: Modifier = Modifier, mainViewModel: MainViewModel = MainViewModel()) {
     Column(
         modifier = modifier
-            .background(Color.LightGray)
             .fillMaxSize()
     ) {
         val list = mainViewModel.dataList.collectAsStateWithLifecycle().value
@@ -64,7 +63,7 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: WeatherBean) {
 
     Row(
         modifier = modifier
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
             .fillMaxWidth()
     ) {
 
@@ -94,9 +93,10 @@ fun PictureRowItem(modifier: Modifier = Modifier, data: WeatherBean) {
             Text(
                 text = data.name,
                 fontSize = 20.sp,
-                color = Color.Blue
+                color = MaterialTheme.colorScheme.primary
             )
             Text(text = data.getResume().take(20) + "...",
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 fontSize = 14.sp,)
         }
     }
