@@ -7,7 +7,9 @@ import com.example.a25_10_ynov_android.model.KtorWeatherApi
 import com.example.a25_10_ynov_android.model.TempBean
 import com.example.a25_10_ynov_android.model.WeatherBean
 import com.example.a25_10_ynov_android.model.WindBean
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ suspend fun main() {
     KtorWeatherApi.close()
 }
 
-class MainViewModel : ViewModel() {
+open class MainViewModel(val dispatcher : CoroutineDispatcher = Dispatchers.IO) : ViewModel() {
     //MutableStateFlow est une donnée observable
     val dataList = MutableStateFlow(emptyList<WeatherBean>())
     val runInProgress = MutableStateFlow(false)
@@ -83,12 +85,12 @@ class MainViewModel : ViewModel() {
         ).shuffled() //shuffled() pour avoir un ordre différent à chaque appel
     }
 
-    fun loadWeathers(cityName: String) {
+    fun loadWeathers(cityName: String): Job {
         runInProgress.value = true
         errorMessage.value = ""
 
 
-        viewModelScope.launch(Dispatchers.IO) {
+        return viewModelScope.launch(dispatcher) {
             try {
                 if(cityName.length < 3) {
                     throw Exception("Il faut au moins 3 caratchères")
