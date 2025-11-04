@@ -42,6 +42,7 @@ class MainViewModel : ViewModel() {
     fun loadFakeData(runInProgress :Boolean = false, errorMessage:String = "" ) {
         this.runInProgress.value = runInProgress
         this.errorMessage.value = errorMessage
+
         dataList.value = listOf(
             WeatherBean(
                 id = 1,
@@ -84,6 +85,9 @@ class MainViewModel : ViewModel() {
 
     fun loadWeathers(cityName: String) {
         runInProgress.value = true
+        errorMessage.value = ""
+
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if(cityName.length < 3) {

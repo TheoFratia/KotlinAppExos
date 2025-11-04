@@ -1,5 +1,6 @@
 package com.example.a25_10_ynov_android.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.a25_10_ynov_android.R
 import com.example.a25_10_ynov_android.model.WeatherBean
+import com.example.a25_10_ynov_android.ui.MyError
 import com.example.a25_10_ynov_android.ui.theme.A25_10_ynov_androidTheme
 import com.example.a25_10_ynov_android.viewmodel.MainViewModel
 
@@ -93,6 +96,16 @@ fun SearchScreen(
         )
 
         val list = mainViewModel.dataList.collectAsStateWithLifecycle().value
+        val errorMessage by mainViewModel.errorMessage.collectAsStateWithLifecycle()
+        val runInProgress by mainViewModel.runInProgress.collectAsStateWithLifecycle()
+
+        MyError(errorMessage = errorMessage)
+
+        AnimatedVisibility(visible = runInProgress){
+            CircularProgressIndicator()
+        }
+
+
         //.filter { it.name.contains(searchText.value, true) }
         //Permet de remplacer très facilement le RecyclerView. LazyRow existe aussi
         LazyColumn(
